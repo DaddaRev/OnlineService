@@ -1,0 +1,17 @@
+Smartphone 499.99
+Laptop 980.90
+Tablet 280.00
+Smartwatch 199.10
+Computer 990.10
+Headphones 49.00
+Earbuds 79.99
+Camera 575.00
+VintageTV 600
+Console 390.90
+Router 75.99
+SmallSpeaker 78.90
+BigSpeaker 550.00
+SmartTv 1300.99
+Tracker 79.99
+GamingConsole 750.50
+-1
