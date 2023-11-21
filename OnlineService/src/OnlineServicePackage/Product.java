@@ -16,7 +16,14 @@ public class Product {
 		this.name = n;
 		this.price = d;
 		this.id = id_counter;
-		Product.id_counter ++; 		//automatic id setting on every product
+		Product.id_counter ++; 		//automatic id setting on each new product
+	}
+	
+	public Product(String n, double d, int id)
+	{
+		this.name = n;
+		this.price = d;
+		this.id = id;
 	}
 	
 	public String getName()
@@ -33,4 +40,5 @@ public class Product {
 	{
 		return this.id;
 	}
+	
 }

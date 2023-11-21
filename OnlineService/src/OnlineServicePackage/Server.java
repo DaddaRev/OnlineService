@@ -1,4 +1,4 @@
-
+//Idea di miglioramento: funzione per ottimizzare la creazione di un prodotto data una stringa di testo.
 package OnlineServicePackage;
 
 import java.io.BufferedReader;
@@ -45,7 +45,32 @@ public class Server
         }
 	}
 	
-	public void products_showToClient(DataOutputStream os) throws IOException  //Function to send the productList in the Client buffer
+	/**
+	 * Function to check if a product is in the productsList.
+	 * 
+	 * @param name String name of the product to check
+	 * @return true if product is found, false if not
+	 */
+	public boolean isInList(String name)
+	{
+		for(Product p : this.productsList)
+		{
+			if(p.getName().equals(name))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Function to send every product in the productsList in the Client buffer.
+	 * 
+	 * Each product is sent as a string text to the client.
+	 * 
+	 * @param os DataaOutputStream object used to send each product contained in the Productslist to the client.
+	 */
+	public void products_showToClient(DataOutputStream os) throws IOException  
 	{
 		for (Product product : this.productsList) 
 		{
@@ -73,6 +98,36 @@ public class Server
 		{
 			os.writeBytes("notfound\n");
 		}
+	}
+	
+	public void product_addToList(DataOutputStream os, BufferedReader is) throws IOException		
+	{																								
+		String returned_product = is.readLine();
+		String[] parts = returned_product.split(" "); 
+		
+		String productName = null;
+		double productPrice = 0;
+		
+        if (parts.length == 3) //client is returning a product
+        {
+            productName = parts[0]; 
+            productPrice = Double.parseDouble(parts[1]); 
+            int productId = Integer.parseInt(parts[2]);
+            productsList.add(new Product(productName, productPrice, productId));
+        }
+        if(parts.length == 2) //client is asking to add a new product
+        {
+			productName = parts[0];
+        	productPrice = Double.parseDouble(parts[1]);
+        	
+        	if(isInList(productName))
+        	{
+        		os.writeBytes("alreadyin\n");
+        	}else {
+	        	productsList.add(new Product(productName, productPrice));
+	        	os.writeBytes("ok\n");
+			}
+        }
 	}
 
 	public void service()
@@ -119,12 +174,14 @@ public class Server
 					boolean closed_client = false;
 					while(!closed_client)
 					{
-						System.out.println("Waiting for input command\n");
+						//System.out.println("Waiting for input command\n");
 						command = is.readLine();
 						
 						switch (command) {
 						case "s": this.products_showToClient(os); break;		//Show the list of available products
-						case "r": this.product_sendToClient(os,is); break;		//Send a requested produt to the client
+						case "b": this.product_sendToClient(os,is); break;		//Send a requested product to the client
+						case "r": this.product_addToList(os, is); break;
+						case "a": this.product_addToList(os, is); break;		
 						case "close":
 						{
 							//Close the client connection
